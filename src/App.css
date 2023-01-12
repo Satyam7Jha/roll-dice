@@ -76,7 +76,7 @@ h3[id='close']{
 h3[id='close']:active{
   color: white;
 }
-div[id='start-button-div']{
+form[id='start-button-div']{
   display: flex;
   flex-direction: column;
 }
@@ -86,6 +86,26 @@ input{
   padding: 14px 20px;
   margin: 8px 0;
   border: 2px solid #9c060c;
+  margin-left: -15px;
   border-radius: 4px;
   cursor: pointer;
+}
+.margin-top{
+  margin-top: 100px;
+}
+h1{
+  color:#9c060c
+}
+img[id='lock']{
+  width: 30px;
+  height: 30px;
+  margin-right:-40px;
+  cursor: pointer;
+
+}
+.dice-div{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }

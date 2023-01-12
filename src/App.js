@@ -25,6 +25,9 @@ export default function App() {
     2: false,
     3: false,
   });
+  const [dice, setDice] = React.useState([1, 1, 1]);
+
+  const [valid, setValid] = React.useState(false);
 
   const [buttonType, setButtonType] = React.useState("start");
 
@@ -32,30 +35,28 @@ export default function App() {
     return Math.floor(Math.random() * 6 + 1);
   };
 
-  const [dice, setDice] = React.useState([1, 1, 1]);
+  const startGame = (e) => {
+    e.preventDefault();
 
-  const [valid, setValid] = React.useState(false);
-
-  const startGame = () => {
-    if (firstDice > 6 || firstDice < 0) {
-      setValid(true);
-      return;
-    }
     setLoading({
       1: true,
-      2: true,
-      3: true,
+      2: false,
+      3: false,
     });
 
     setTimeout(() => {
-      setDice([firstDice, rollDice(), rollDice()]);
+      setDice([rollDice(), 1, 1]);
       setLoading({
         1: false,
         2: false,
         3: false,
       });
-      setButtonType("tryLuck");
-    }, 5000);
+    }, 3000);
+  };
+
+  const handleLock = () => {
+    setLock(true);
+    setButtonType("tryLuck");
   };
 
   const finalResult = () => {
@@ -82,30 +83,20 @@ export default function App() {
         modal: true,
         result: finalResult(),
       });
-    }, 5000);
+    }, 3000);
   };
-  DICE_img[dice[0]];
 
   const [modal, setModal] = React.useState({
     modal: false,
     result: "win",
   });
 
-  const [firstDice, setFirstDice] = React.useState(1);
-
+  const [lock, setLock] = React.useState(false);
   return (
     <div>
-      {valid === true && (
-        <div id="modal">
-          <h3 id="close" onClick={() => setValid(false)}>
-            X
-          </h3>
-          Invalid Input!!
-        </div>
-      )}
       {modal["modal"] === true && (
-        <div id="modal">
-          <h3 id="close" onClick={() => setModal({ modal: false, result: "" })}>
+        <div id="modal" style={{ marginTop: "200px" }}>
+          <h3 id="close" onClick={() => window.location.reload()}>
             X
           </h3>
 
@@ -118,21 +109,45 @@ export default function App() {
 
       <section id="container">
         <div>
-          {loading[1] == false && <img src={DICE_img[dice[0]]} />}
+          {loading[1] == false && (
+            <div className="dice-div">
+              {lock === true && (
+                <img
+                  id="lock"
+                  src="https://cdn-icons-png.flaticon.com/512/1803/1803612.png"
+                />
+              )}
+              {lock === false && (
+                <img
+                  onClick={handleLock}
+                  id="lock"
+                  src="https://png.pngtree.com/png-vector/20191024/ourmid/pngtree-unlock-glyph-icon-vector-png-image_1859166.jpg"
+                />
+              )}
+
+              <img src={DICE_img[dice[0]]} />
+            </div>
+          )}
 
           {loading[1] == true && (
-            <Player
-              src={animationData}
-              className="player"
-              loop
-              autoplay
-              style={{ width: "200px", height: "200px" }}
-            />
+            <React.Fragment>
+              <Player
+                src={animationData}
+                className="player"
+                loop
+                autoplay
+                style={{ width: "200px", height: "200px" }}
+              />
+            </React.Fragment>
           )}
         </div>
 
         <div>
-          {loading[2] == false && <img src={DICE_img[dice[1]]} />}
+          {loading[2] == false && (
+            <div>
+              <img src={DICE_img[dice[1]]} />
+            </div>
+          )}
 
           {loading[2] == true && (
             <Player
@@ -161,15 +176,7 @@ export default function App() {
 
       <section id="button-container">
         {buttonType === "start" && (
-          <div id="start-button-div">
-            <input
-              placeholder="Enter the value of first dice"
-              type="number"
-              onChange={(e) => setFirstDice(e.target.value)}
-            />
-
-            <button onClick={startGame}>Start Game</button>
-          </div>
+          <button onClick={startGame}>Roll Dice</button>
         )}
         {buttonType === "tryLuck" && (
           <button onClick={tryLuck}>Try Luck</button>
